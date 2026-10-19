@@ -1,0 +1,1302 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b09">
+  <meta name="description" content="米迦尔的个人博客">
+  <title>米迦尔的博客 · Michael's Blog</title>
+
+  <style>
+    :root {
+      --bg: #080b09;
+      --text: #edf4ef;
+      --muted: #89968d;
+      --green: #9cf5b5;
+      --border: rgba(180, 255, 205, 0.12);
+      --mouse-x: 50vw;
+      --mouse-y: 35vh;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(
+          ellipse at 50% -10%,
+          rgba(42, 112, 69, 0.22),
+          transparent 55%
+        ),
+        radial-gradient(
+          ellipse at 90% 65%,
+          rgba(31, 89, 54, 0.10),
+          transparent 40%
+        ),
+        var(--bg);
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Microsoft YaHei", sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    ::selection {
+      color: #06130a;
+      background: var(--green);
+    }
+
+    /* ==============================
+       背景氛围装饰
+    ============================== */
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .ambient::before,
+    .ambient::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(110px);
+      opacity: 0.12;
+      animation: ambientFloat 16s ease-in-out infinite alternate;
+    }
+
+    .ambient::before {
+      top: 20%;
+      left: -180px;
+      background: #29a45b;
+    }
+
+    .ambient::after {
+      right: -180px;
+      bottom: 5%;
+      background: #24784b;
+      animation-delay: -8s;
+    }
+
+    @keyframes ambientFloat {
+      from {
+        transform: translate3d(0, 0, 0);
+      }
+      to {
+        transform: translate3d(50px, -35px, 0);
+      }
+    }
+
+    /* ==============================
+       鼠标跟随渐变光晕
+    ============================== */
+
+    .mouse-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        480px circle at var(--mouse-x) var(--mouse-y),
+        rgba(72, 200, 115, 0.19),
+        rgba(40, 125, 72, 0.09) 38%,
+        transparent 72%
+      );
+      will-change: background;
+    }
+
+    /* ==============================
+       鼠标粒子拖尾
+    ============================== */
+
+    .cursor-trail {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 7px;
+      height: 7px;
+      z-index: 999;
+      border-radius: 50%;
+      pointer-events: none;
+      background: rgba(156, 245, 181, 0.95);
+      box-shadow:
+        0 0 8px rgba(100, 255, 150, 0.8),
+        0 0 18px rgba(60, 220, 110, 0.45);
+      transform: translate(-50%, -50%);
+      animation: cursorTrailFade 2.5s ease-out forwards;
+      will-change: transform, opacity;
+    }
+
+    @keyframes cursorTrailFade {
+      0% {
+        opacity: 0.9;
+        scale: 1;
+      }
+
+      100% {
+        opacity: 0;
+        scale: 0.1;
+      }
+    }
+
+    /* ==============================
+       顶部导航
+    ============================== */
+
+    .navbar-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 16px 24px 0;
+    }
+
+    .navbar {
+      width: min(1120px, 100%);
+      min-height: 64px;
+      margin: 0 auto;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(11, 17, 13, 0.72);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: #07140b;
+      background: linear-gradient(135deg, #c0ffd0, #55d987);
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 0 24px rgba(111, 241, 157, 0.12);
+    }
+
+    .brand-text {
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .brand-text span {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-link {
+      padding: 10px 14px;
+      color: #bdc9c0;
+      border-radius: 10px;
+      font-size: 13px;
+      transition: color 0.25s, background 0.25s;
+    }
+
+    .nav-link:hover {
+      color: var(--green);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 6px;
+      padding: 8px 11px;
+      color: #a5b4a9;
+      background: rgba(156, 245, 181, 0.055);
+      border: 1px solid rgba(156, 245, 181, 0.10);
+      border-radius: 10px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(156, 245, 181, 0.6);
+    }
+
+    /* ==============================
+       页面主体
+    ============================== */
+
+    .main {
+      position: relative;
+      z-index: 1;
+      width: min(1000px, calc(100% - 40px));
+      min-height: calc(100vh - 220px);
+      margin: 0 auto;
+      padding: 110px 0 90px;
+    }
+
+    .hero {
+      text-align: center;
+      animation: riseIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 26px;
+      padding: 9px 14px;
+      color: #a7cbb1;
+      background: rgba(156, 245, 181, 0.045);
+      border: 1px solid rgba(156, 245, 181, 0.13);
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.19em;
+    }
+
+    .eyebrow-line {
+      width: 17px;
+      height: 1px;
+      background: #4ebd79;
+    }
+
+    h1 {
+      font-size: clamp(40px, 7vw, 76px);
+      line-height: 1.15;
+      font-weight: 750;
+      letter-spacing: -0.055em;
+    }
+
+    .gradient-text {
+      color: transparent;
+      background: linear-gradient(
+        110deg,
+        #f0fff3 10%,
+        #a5f5bb 52%,
+        #6fcf90 100%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .hero-subtitle {
+      max-width: 550px;
+      margin: 24px auto 0;
+      color: #95a39a;
+      font-size: 15px;
+      line-height: 1.9;
+      font-weight: 350;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 27px;
+      color: #68766d;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+
+    .meta-separator {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #4d7e5b;
+    }
+
+    /* ==============================
+       文章区域
+    ============================== */
+
+    .content-section {
+      margin-top: 105px;
+      animation: riseIn 1s 0.15s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 3px;
+      height: 15px;
+      background: var(--green);
+      border-radius: 4px;
+      box-shadow: 0 0 12px rgba(156, 245, 181, 0.35);
+    }
+
+    .section-label {
+      color: #5e6d63;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+    }
+
+    .empty-state {
+      position: relative;
+      min-height: 285px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 36px 24px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.035),
+        rgba(255, 255, 255, 0.012)
+      );
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: border-color 0.35s, background 0.35s;
+    }
+
+    .empty-state:hover {
+      border-color: rgba(156, 245, 181, 0.22);
+      background: linear-gradient(
+        145deg,
+        rgba(156, 245, 181, 0.045),
+        rgba(255, 255, 255, 0.012)
+      );
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 23px;
+      color: var(--green);
+      border: 1px solid rgba(156, 245, 181, 0.16);
+      border-radius: 19px;
+      background: rgba(156, 245, 181, 0.055);
+      box-shadow: 0 0 40px rgba(65, 176, 99, 0.06);
+    }
+
+    .empty-icon svg {
+      width: 25px;
+      height: 25px;
+      stroke: currentColor;
+      stroke-width: 1.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .empty-title {
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .empty-description {
+      margin-top: 12px;
+      color: #829087;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .coming-soon {
+      margin-top: 22px;
+      color: #8acb9d;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+    }
+
+    .coming-soon::before,
+    .coming-soon::after {
+      content: "—";
+      margin: 0 9px;
+      color: #456f50;
+    }
+
+    /* 文章卡片 */
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .article-card {
+      display: block;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.045);
+      transition: transform 0.3s, border-color 0.3s, background 0.3s;
+    }
+
+    .article-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(156, 245, 181, 0.25);
+      background: rgba(255, 255, 255, 0.075);
+    }
+
+    .article-date {
+      color: #80bb91;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+
+    .article-title {
+      margin-top: 15px;
+      font-size: 19px;
+      line-height: 1.5;
+      font-weight: 650;
+    }
+
+    .article-summary {
+      margin-top: 10px;
+      color: #94a097;
+      font-size: 13px;
+      line-height: 1.85;
+    }
+
+    .article-more {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    /* ==============================
+       页脚
+    ============================== */
+
+    .footer {
+      position: relative;
+      z-index: 1;
+      width: min(1000px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 26px 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      color: #637067;
+      font-size: 11px;
+    }
+
+    .footer-left {
+      line-height: 1.9;
+    }
+
+    .footer-brand {
+      color: #a2b0a6;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: color 0.25s;
+    }
+
+    .footer-links a:hover {
+      color: var(--green);
+    }
+
+    .footer-links svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* ==============================
+       音乐播放器
+    ============================== */
+
+    .music-player {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 14px 10px 11px;
+      border: 1px solid rgba(156, 245, 181, 0.17);
+      border-radius: 16px;
+      background: rgba(12, 20, 15, 0.84);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .music-player:hover {
+      border-color: rgba(156, 245, 181, 0.34);
+      transform: translateY(-2px);
+    }
+
+    .music-toggle {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: #08140b;
+      background: linear-gradient(135deg, #c4ffd2, #70e99a);
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, filter 0.2s;
+    }
+
+    .music-toggle:hover {
+      filter: brightness(1.08);
+    }
+
+    .music-toggle:active {
+      transform: scale(0.93);
+    }
+
+    .music-toggle svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .music-info {
+      min-width: 90px;
+    }
+
+    .music-name {
+      color: #e1eee5;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .music-status {
+      margin-top: 5px;
+      color: #809286;
+      font-size: 10px;
+    }
+
+    .music-visualizer {
+      height: 18px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 5px;
+    }
+
+    .music-visualizer span {
+      width: 2px;
+      height: 4px;
+      background: var(--green);
+      border-radius: 4px;
+      opacity: 0.55;
+    }
+
+    .music-player.playing .music-visualizer span {
+      opacity: 1;
+      animation: equalize 0.75s ease-in-out infinite alternate;
+    }
+
+    .music-visualizer span:nth-child(2) {
+      animation-delay: -0.35s;
+    }
+
+    .music-visualizer span:nth-child(3) {
+      animation-delay: -0.6s;
+    }
+
+    .music-visualizer span:nth-child(4) {
+      animation-delay: -0.2s;
+    }
+
+    @keyframes equalize {
+      from { height: 4px; }
+      to { height: 17px; }
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==============================
+       移动端适配
+    ============================== */
+
+    @media (max-width: 640px) {
+      .navbar-wrap {
+        padding: 10px 12px 0;
+      }
+
+      .navbar {
+        min-height: 58px;
+        padding: 0 13px;
+        border-radius: 15px;
+      }
+
+      .brand {
+        gap: 8px;
+      }
+
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+      }
+
+      .brand-text {
+        font-size: 12px;
+      }
+
+      .nav-link {
+        padding: 9px 8px;
+        font-size: 12px;
+      }
+
+      .nav-status {
+        display: none;
+      }
+
+      .main {
+        width: calc(100% - 32px);
+        min-height: calc(100vh - 190px);
+        padding-top: 85px;
+        padding-bottom: 65px;
+      }
+
+      .eyebrow {
+        margin-bottom: 22px;
+        font-size: 9px;
+      }
+
+      .hero-subtitle {
+        max-width: 340px;
+        font-size: 13px;
+      }
+
+      .content-section {
+        margin-top: 75px;
+      }
+
+      .empty-state {
+        min-height: 260px;
+        padding: 30px 18px;
+      }
+
+      .article-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        width: calc(100% - 32px);
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 17px;
+      }
+
+      .music-player {
+        right: 13px;
+        bottom: 13px;
+        padding: 8px 11px 8px 8px;
+      }
+
+      .music-toggle {
+        width: 34px;
+        height: 34px;
+      }
+
+      .mouse-glow {
+        background: radial-gradient(
+          340px circle at var(--mouse-x) var(--mouse-y),
+          rgba(72, 200, 115, 0.15),
+          transparent 72%
+        );
+      }
+    }
+
+    @media (pointer: coarse), (prefers-reduced-motion: reduce) {
+      .cursor-trail {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 背景 -->
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="mouse-glow" aria-hidden="true"></div>
+
+  <!-- 导航栏 -->
+  <div class="navbar-wrap">
+    <header class="navbar">
+      <a class="brand" href="#home" aria-label="返回首页">
+        <div class="brand-mark">M</div>
+        <div class="brand-text">
+          米迦尔的博客 <span>· Michael's Blog</span>
+        </div>
+      </a>
+
+      <nav class="nav-right" aria-label="主导航">
+        <a class="nav-link" href="#home">首页</a>
+        <a class="nav-link" href="#articles">文章</a>
+        <div class="nav-status">
+          <span class="status-dot"></span>
+          <span>个人空间</span>
+        </div>
+      </nav>
+    </header>
+  </div>
+
+  <!-- 页面主体 -->
+  <main class="main" id="home">
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        A PERSONAL SPACE
+        <span class="eyebrow-line"></span>
+      </div>
+
+      <h1>
+        <span class="gradient-text">我是人类</span><br>
+        你好世界
+      </h1>
+
+      <p class="hero-subtitle">
+        你好，欢迎来到我的被窝<br>
+      </p>
+
+      <div class="hero-meta">
+        <span>THOUGHTS</span>
+        <span class="meta-separator"></span>
+        <span>TECHNOLOGY</span>
+        <span class="meta-separator"></span>
+        <span>DAILY LIFE</span>
+      </div>
+    </section>
+
+    <section class="content-section" id="articles">
+      <div class="section-heading">
+        <h2 class="section-title">最新文章</h2>
+        <span class="section-label">LATEST POSTS</span>
+      </div>
+
+      <div id="article-container"></div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-brand">米迦尔的博客 · Michael's Blog</div>
+      <div>© <span id="year"></span> Michael. All rights reserved.</div>
+    </div>
+
+    <div class="footer-links">
+      <a
+        href="https://www.youtube.com/@Mijiaer-V"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="YouTube"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/>
+        </svg>
+        YouTube
+      </a>
+
+      <a
+        href="https://space.bilibili.com/538362313"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Bilibili"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18.2 4H5.8A3.8 3.8 0 0 0 2 7.8v9.4A3.8 3.8 0 0 0 5.8 21h12.4a3.8 3.8 0 0 0 3.8-3.8V7.8A3.8 3.8 0 0 0 18.2 4ZM8.5 2.1a1 1 0 0 0-1.4 1.4L9 5.4a1 1 0 0 0 1.4-1.4L8.5 2.1Zm7 0-1.9 1.9A1 1 0 0 0 15 5.4l1.9-1.9a1 1 0 0 0-1.4-1.4ZM7.5 9a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm9 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4ZM8 14h8a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2Z"/>
+        </svg>
+        Bilibili
+      </a>
+    </div>
+  </footer>
+
+  <!-- 音乐播放器 -->
+  <div class="music-player" id="musicPlayer">
+    <button
+      class="music-toggle"
+      id="musicToggle"
+      type="button"
+      aria-label="播放背景音乐"
+      title="播放 / 暂停背景音乐"
+    >
+      <svg id="musicIcon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 5v14l11-7L8 5Z"></path>
+      </svg>
+    </button>
+
+    <div class="music-info">
+      <div class="music-name">背景音乐</div>
+      <div class="music-status" id="musicStatus">正在准备音乐…</div>
+    </div>
+
+    <div class="music-visualizer" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <audio id="backgroundMusic" loop preload="auto">
+    <source
+      src="https://1drv.ms/u/c/73696150c5679e3b/IQC0wlk1CMCBRZ_YZlTEZcGsARfCDm0v_j48hL6gqrhzz9M?e=HIfB0D&download=1"
+      type="audio/mpeg"
+    >
+    您的浏览器不支持音频播放。
+  </audio>
+
+  <script>
+    /* ==========================================
+       文章数据
+       在数组中添加文章即可显示文章卡片。
+       ========================================== */
+
+    const articles = [
+      /*
+      {
+        title: "我的第一篇文章",
+        date: "2026-10-17",
+        summary: "在这里填写文章摘要。",
+        url: "https://example.com/my-first-post"
+      }
+      */
+    ];
+
+    const articleContainer =
+      document.getElementById("article-container");
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function safeURL(value) {
+      try {
+        const url = new URL(value || "#", location.href);
+
+        if (["http:", "https:", "file:"].includes(url.protocol)) {
+          return escapeHTML(url.href);
+        }
+      } catch (error) {
+        // 无效链接回退到首页
+      }
+
+      return "#";
+    }
+
+    function renderArticles() {
+      if (!Array.isArray(articles) || articles.length === 0) {
+        articleContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 3v3"></path>
+                <path d="M12 18v3"></path>
+                <path d="M3 12h3"></path>
+                <path d="M18 12h3"></path>
+                <path d="m5.64 5.64 2.12 2.12"></path>
+                <path d="m16.24 16.24 2.12 2.12"></path>
+                <path d="m5.64 18.36 2.12-2.12"></path>
+                <path d="m16.24 7.76 2.12-2.12"></path>
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+            </div>
+
+            <h3 class="empty-title">灵感被我吃了</h3>
+
+            <p class="empty-description">
+              文章写着呢<br>
+              催我的是GAY
+            </p>
+
+            <div class="coming-soon">COMING SOON</div>
+          </div>
+        `;
+        return;
+      }
+
+      const sortedArticles = [...articles].sort((a, b) =>
+        new Date(b.date) - new Date(a.date)
+      );
+
+      articleContainer.innerHTML = `
+        <div class="article-grid">
+          ${sortedArticles.map(article => `
+            <a
+              class="article-card"
+              href="${safeURL(article.url)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="article-date">
+                ${escapeHTML(article.date || "")}
+              </div>
+
+              <h3 class="article-title">
+                ${escapeHTML(article.title || "未命名文章")}
+              </h3>
+
+              <p class="article-summary">
+                ${escapeHTML(article.summary || "")}
+              </p>
+
+              <span class="article-more">阅读全文 ↗</span>
+            </a>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    renderArticles();
+
+    /* ==========================================
+       鼠标跟随背景光晕
+       ========================================== */
+
+    (() => {
+      const root = document.documentElement;
+
+      let targetX = window.innerWidth * 0.5;
+      let targetY = window.innerHeight * 0.35;
+      let currentX = targetX;
+      let currentY = targetY;
+      let animationId = null;
+
+      root.style.setProperty("--mouse-x", `${currentX}px`);
+      root.style.setProperty("--mouse-y", `${currentY}px`);
+
+      function animateGlow() {
+        currentX += (targetX - currentX) * 0.12;
+        currentY += (targetY - currentY) * 0.12;
+
+        root.style.setProperty("--mouse-x", `${currentX}px`);
+        root.style.setProperty("--mouse-y", `${currentY}px`);
+
+        if (
+          Math.abs(targetX - currentX) > 0.5 ||
+          Math.abs(targetY - currentY) > 0.5
+        ) {
+          animationId = requestAnimationFrame(animateGlow);
+        } else {
+          currentX = targetX;
+          currentY = targetY;
+
+          root.style.setProperty("--mouse-x", `${currentX}px`);
+          root.style.setProperty("--mouse-y", `${currentY}px`);
+
+          animationId = null;
+        }
+      }
+
+      function updateMousePosition(event) {
+        targetX = event.clientX;
+        targetY = event.clientY;
+
+        if (animationId === null) {
+          animationId = requestAnimationFrame(animateGlow);
+        }
+      }
+
+      window.addEventListener("pointermove", updateMousePosition, {
+        passive: true
+      });
+
+      window.addEventListener("resize", () => {
+        targetX = Math.min(targetX, window.innerWidth);
+        targetY = Math.min(targetY, window.innerHeight);
+      });
+    })();
+
+    /* ==========================================
+       鼠标粒子拖尾
+       ========================================== */
+
+    (() => {
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      const coarsePointer = window.matchMedia(
+        "(pointer: coarse)"
+      ).matches;
+
+      if (reducedMotion || coarsePointer) return;
+
+      let lastX = null;
+      let lastY = null;
+      let lastTime = 0;
+
+      const spacing = 7;
+      const interval = 16;
+      const maxParticles = 55;
+      let particleCount = 0;
+
+      window.addEventListener("pointermove", event => {
+        if (event.pointerType === "touch") return;
+
+        const x = event.clientX;
+        const y = event.clientY;
+        const now = performance.now();
+
+        if (lastX === null || lastY === null) {
+          lastX = x;
+          lastY = y;
+          lastTime = now;
+          return;
+        }
+
+        const dx = x - lastX;
+        const dy = y - lastY;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance < spacing || now - lastTime < interval) return;
+
+        const dot = document.createElement("div");
+        dot.className = "cursor-trail";
+        dot.style.left = `${x}px`;
+        dot.style.top = `${y}px`;
+
+        document.body.appendChild(dot);
+        particleCount++;
+
+        dot.addEventListener("animationend", () => {
+          dot.remove();
+          particleCount--;
+        }, { once: true });
+
+        if (particleCount > maxParticles) {
+          const oldest = document.querySelector(".cursor-trail");
+
+          if (oldest) {
+            oldest.remove();
+            particleCount = Math.max(0, particleCount - 1);
+          }
+        }
+
+        lastX = x;
+        lastY = y;
+        lastTime = now;
+      }, { passive: true });
+    })();
+
+    /* ==========================================
+       背景音乐播放器
+       浏览器可能禁止首次自动播放带声音的音频。
+       ========================================== */
+
+    const audio = document.getElementById("backgroundMusic");
+    const musicPlayer = document.getElementById("musicPlayer");
+    const musicToggle = document.getElementById("musicToggle");
+    const musicIcon = document.getElementById("musicIcon");
+    const musicStatus = document.getElementById("musicStatus");
+
+    let userPausedMusic = false;
+    let firstInteractionHandled = false;
+
+    const playSVG = `
+      <path d="M8 5v14l11-7L8 5Z"></path>
+    `;
+
+    const pauseSVG = `
+      <path d="M7 5h4v14H7z"></path>
+      <path d="M15 5h4v14h-4z"></path>
+    `;
+
+    function updateMusicUI() {
+      if (audio.paused) {
+        musicPlayer.classList.remove("playing");
+        musicIcon.innerHTML = playSVG;
+        musicToggle.setAttribute("aria-label", "播放背景音乐");
+
+        if (audio.error) {
+          musicStatus.textContent = "音乐加载失败";
+        } else if (userPausedMusic) {
+          musicStatus.textContent = "已暂停";
+        } else {
+          musicStatus.textContent = "点击播放音乐";
+        }
+      } else {
+        musicPlayer.classList.add("playing");
+        musicIcon.innerHTML = pauseSVG;
+        musicToggle.setAttribute("aria-label", "暂停背景音乐");
+        musicStatus.textContent = "正在播放";
+      }
+    }
+
+    async function playMusic() {
+      try {
+        musicStatus.textContent = "正在加载音乐…";
+        await audio.play();
+        userPausedMusic = false;
+        updateMusicUI();
+      } catch (error) {
+        updateMusicUI();
+
+        if (error.name === "NotAllowedError") {
+          musicStatus.textContent = "点击按钮播放音乐";
+        } else {
+          musicStatus.textContent = "无法播放，请检查音频链接";
+          console.warn("背景音乐播放失败：", error);
+        }
+      }
+    }
+
+    function pauseMusic() {
+      audio.pause();
+      updateMusicUI();
+    }
+
+    musicToggle.addEventListener("click", async () => {
+      if (audio.paused) {
+        userPausedMusic = false;
+        await playMusic();
+      } else {
+        userPausedMusic = true;
+        pauseMusic();
+      }
+    });
+
+    audio.addEventListener("play", updateMusicUI);
+    audio.addEventListener("pause", updateMusicUI);
+    audio.addEventListener("ended", updateMusicUI);
+
+    audio.addEventListener("error", () => {
+      musicStatus.textContent = "音乐加载失败，请检查链接";
+      updateMusicUI();
+    });
+
+    window.addEventListener("load", () => {
+      playMusic();
+    });
+
+    function handleFirstInteraction() {
+      if (firstInteractionHandled) return;
+      firstInteractionHandled = true;
+
+      if (!userPausedMusic && audio.paused && !audio.error) {
+        playMusic();
+      }
+
+      document.removeEventListener(
+        "pointerdown",
+        handleFirstInteraction
+      );
+      document.removeEventListener(
+        "keydown",
+        handleFirstInteraction
+      );
+    }
+
+    document.addEventListener(
+      "pointerdown",
+      handleFirstInteraction,
+      { passive: true }
+    );
+
+    document.addEventListener("keydown", handleFirstInteraction);
+
+    updateMusicUI();
+  </script>
+</body>
+</html>
